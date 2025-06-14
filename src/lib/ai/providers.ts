@@ -1,7 +1,3 @@
-import { openai } from "@ai-sdk/openai";
-import { anthropic } from "@ai-sdk/anthropic";
-import { google } from "@ai-sdk/google";
-
 export interface ModelConfig {
   id: string;
   name: string;
@@ -71,25 +67,6 @@ export interface ProviderKeys {
   openai?: string;
   anthropic?: string;
   google?: string;
-}
-
-export function getProviderClient(provider: string, apiKeys?: ProviderKeys) {
-  switch (provider) {
-    case "openai":
-      return openai({
-        apiKey: apiKeys?.openai || process.env.OPENAI_API_KEY,
-      });
-    case "anthropic":
-      return anthropic({
-        apiKey: apiKeys?.anthropic || process.env.ANTHROPIC_API_KEY,
-      });
-    case "google":
-      return google({
-        apiKey: apiKeys?.google || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-      });
-    default:
-      throw new Error(`Unsupported provider: ${provider}`);
-  }
 }
 
 export function getModelProvider(modelId: string): string {

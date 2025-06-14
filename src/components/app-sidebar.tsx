@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
@@ -39,16 +39,15 @@ export function AppSidebar() {
                 <Button
                   variant="default"
                   type="button"
-                  className="p-2 h-fit w-full"
+                  className="p-2 h-fit w-full cursor-pointer"
                   onClick={() => {
                     setOpenMobile(false);
                     router.push("/");
                     router.refresh();
                   }}
                 >
-                  <span className="text-sm font-semibold px-2 rounded-md cursor-pointer">
-                    New Chat
-                  </span>
+                  <PlusIcon size={16} />
+                  New Chat
                 </Button>
               </TooltipTrigger>
               <TooltipContent
