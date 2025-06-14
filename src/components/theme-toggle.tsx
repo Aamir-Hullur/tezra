@@ -5,19 +5,21 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-function ThemeToggle() {
-  const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+function ThemeToggle({}) {
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
-    return null
+    return null;
   }
 
-  const handleThemeChange = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleThemeChange = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     if (!document.startViewTransition) {
       setTheme(resolvedTheme === "dark" ? "light" : "dark");
       return;
@@ -27,8 +29,8 @@ function ThemeToggle() {
     const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
     const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
 
-    document.documentElement.style.setProperty('--x', `${x}%`);
-    document.documentElement.style.setProperty('--y', `${y}%`);
+    document.documentElement.style.setProperty("--x", `${x}%`);
+    document.documentElement.style.setProperty("--y", `${y}%`);
 
     const transition = document.startViewTransition(() => {
       setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -38,14 +40,16 @@ function ThemeToggle() {
   };
 
   return (
-    <div>
+    <div className="absolute right-2 top-2">
       <Toggle
-        variant="outline"
+        variant="ghost"
         className="group size-9 data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted"
         pressed={resolvedTheme === "light"}
         onPressedChange={() => {}}
         onClick={handleThemeChange}
-        aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+        aria-label={`Switch to ${
+          resolvedTheme === "dark" ? "light" : "dark"
+        } mode`}
       >
         <Moon
           size={16}
