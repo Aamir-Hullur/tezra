@@ -7,11 +7,12 @@ import {
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
+import { ChevronsUpDown, PlusIcon, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
@@ -23,32 +24,33 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <div className="flex flex-col items-center justify-center gap-4">
-            <Link
-              href="/"
-              onClick={() => {
-                setOpenMobile(false);
-              }}
-              className="flex flex-row gap-3 items-center"
-            >
-              <span className="text-lg font-semibold px-2 rounded-md cursor-pointer">
-                Tezra
-              </span>
-            </Link>
+            <span className="text-lg font-semibold px-2 rounded-md cursor-pointer">
+              Tezra
+            </span>
+
             <Tooltip delayDuration={500}>
               <TooltipTrigger asChild>
-                <Button
-                  variant="default"
-                  type="button"
-                  className="p-2 h-fit w-full cursor-pointer"
+                <Link
+                  href="/"
                   onClick={() => {
                     setOpenMobile(false);
-                    router.push("/");
-                    router.refresh();
                   }}
+                  className="flex flex-row gap-3 w-full items-center"
                 >
-                  <PlusIcon size={16} />
-                  New Chat
-                </Button>
+                  <Button
+                    variant="default"
+                    type="button"
+                    className="p-2 h-fit w-full cursor-pointer"
+                    onClick={() => {
+                      setOpenMobile(false);
+                      router.push("/");
+                      router.refresh();
+                    }}
+                  >
+                    <PlusIcon size={16} />
+                    New Chat
+                  </Button>
+                </Link>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
@@ -66,7 +68,22 @@ export function AppSidebar() {
         <SidebarGroup />
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <SidebarGroup>
+          <SidebarMenuButton className="w-full justify-between gap-3 h-12">
+            <div className="flex items-center gap-2">
+              <User className="h-5 w-5 rounded-md" />
+              <div className="flex flex-col items-start">
+                <span className="text-sm font-medium">John Doe</span>
+                <span className="text-xs text-muted-foreground">
+                  john@example.com
+                </span>
+              </div>
+            </div>
+            <ChevronsUpDown className="h-5 w-5 rounded-md" />
+          </SidebarMenuButton>
+        </SidebarGroup>
+      </SidebarFooter>
     </Sidebar>
   );
 }

@@ -1,4 +1,4 @@
-import { openai } from "./services";
+import { google } from "./services";
 import { streamText, tool } from "ai";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = streamText({
-    model: openai("gpt-4o"),
+    model: google("gemini-2.0-flash"),
     messages,
     tools: {
       weather: tool({

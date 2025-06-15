@@ -1,10 +1,10 @@
-import MainInput from "@/components/main-input";
+import ChatInput from "@/components/chat-input";
 
 export default function Home() {
   return (
     <div className="h-screen flex justify-center">
-      <div className="flex items-end w-full max-w-2xl">
-        <MainInput />
+      <div className=" w-full max-w-2xl">
+        <ChatInput />
       </div>
     </div>
   );
