@@ -64,7 +64,7 @@ export type AIInputProps = HTMLAttributes<HTMLFormElement>;
 export const AIInput = ({ className, ...props }: AIInputProps) => (
   <form
     className={cn(
-      "w-full divide-y overflow-hidden rounded-tl-lg rounded-tr-lg border bg-background shadow-sm",
+      "w-full divide-y overflow-hidden rounded-3xl border bg-background shadow-[0_8px_30px_rgba(0,0,0,0.24)]",
       className
     )}
     {...props}
@@ -101,7 +101,7 @@ export const AIInputTextarea = ({
       placeholder={placeholder}
       ref={textareaRef}
       className={cn(
-        "w-full resize-none rounded-none border-none p-3 shadow-none outline-none ring-0",
+        "w-full resize-none rounded-none border-none px-3 py-2.5 shadow-none outline-none ring-0 ",
         "bg-transparent dark:bg-transparent",
         "focus-visible:ring-0",
         className
@@ -121,7 +121,7 @@ export const AIInputToolbar = ({
   ...props
 }: AIInputToolbarProps) => (
   <div
-    className={cn("flex items-center justify-between p-1", className)}
+    className={cn("flex items-center justify-between ", className)}
     {...props}
   />
 );
@@ -130,7 +130,7 @@ export const AIInputTools = ({ className, ...props }: AIInputToolsProps) => (
   <div
     className={cn(
       "flex items-center gap-1",
-      "[&_button:first-child]:rounded-bl-lg",
+      "[&_button:first-child]:rounded-full",
       className
     )}
     {...props}

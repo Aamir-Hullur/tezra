@@ -40,7 +40,7 @@ function ThemeToggle({}) {
   };
 
   return (
-    <div className="absolute right-2 top-2">
+    <div className="absolute right-2 top-2 z-50">
       <Toggle
         variant="ghost"
         className="group size-9 data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted"
