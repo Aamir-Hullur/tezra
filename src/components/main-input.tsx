@@ -8,11 +8,17 @@ import {
   AIInputTools,
 } from "@/components/ui/ai-input";
 import { PlusIcon, ArrowUp, Square } from "lucide-react";
-import { type FormEventHandler, useState, memo, useCallback } from "react";
+import {
+  type FormEventHandler,
+  useState,
+  memo,
+  useCallback,
+  useEffect,
+} from "react";
 import { ModelSelector } from "@/components/model-selector";
 import { SearchToggle } from "@/components/search-toggle";
-
-// The new ModelSelector manages its own model data and provider logic internally.
+import { getProviderByModelId } from "@/lib/ai/models";
+import { saveSelectedModel, getSelectedModel } from "@/lib/model-storage";
 
 interface InputToolbarProps {
   model: string;
@@ -63,7 +69,7 @@ const InputToolbar = memo(
         <AIInputSubmit
           variant="default"
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-primary/80 cursor-pointer disabled:cursor-not-allowed bg-primary disabled:bg-primary/50"
+          className="hover:bg-primary/80 bg-primary disabled:bg-primary/50 h-8 w-8 cursor-pointer rounded-full disabled:cursor-not-allowed"
           disabled={isSubmitDisabled}
         >
           {status === "streaming" ? (
@@ -78,7 +84,7 @@ const InputToolbar = memo(
         </AIInputSubmit>
       </AIInputToolbar>
     );
-  }
+  },
 );
 
 InputToolbar.displayName = "InputToolbar";
@@ -89,24 +95,16 @@ interface MainInputProps {
   // onSubmit?: FormEventHandler<HTMLFormElement>;
   onSubmit?: (
     e: React.FormEvent<HTMLFormElement>,
-    modelData: { model: string; provider: string }
+    modelData: { model: string; provider: string },
   ) => void;
 
   placeholder?: string;
   disabled?: boolean;
   status?: "submitted" | "streaming" | "ready" | "error";
+  currentModel?: string;
 }
 
-const DEFAULT_MODEL_ID = "gpt-4o";
-
-// Helper to extract provider from model id
-function getProviderFromModel(modelId: string): string | null {
-  if (modelId.startsWith("gemini-")) return "google";
-  if (modelId.startsWith("gpt-") || modelId.startsWith("o1-")) return "openai";
-  if (modelId.startsWith("claude-")) return "claude";
-  if (modelId.startsWith("deepseek-")) return "deepseek";
-  return null;
-}
+const DEFAULT_MODEL_ID = "gemini-2.0-flash";
 
 const MainInput = memo(
   ({
@@ -116,11 +114,26 @@ const MainInput = memo(
     placeholder = "Ask me anything...",
     disabled = false,
     status,
+    currentModel,
   }: MainInputProps) => {
-    const [model, setModel] = useState<string>(DEFAULT_MODEL_ID);
+    const [model, setModel] = useState<string>(() => {
+      return currentModel || DEFAULT_MODEL_ID;
+    });
+    // useEffect(() => {
+    //   const savedModel = getSelectedModel();
+    //   if (savedModel !== model) {
+    //     setModel(savedModel);
+    //   }
+    // }, [model]);
+
+    useEffect(() => {
+      if (currentModel) {
+        setModel(currentModel);
+      }
+    }, [currentModel]);
 
     const hasContent = status === "streaming" ? true : value.trim() !== "";
-    const provider = getProviderFromModel(model);
+    const provider = getProviderByModelId(model);
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
       (event) => {
@@ -128,33 +141,34 @@ const MainInput = memo(
         console.log("provider:", provider);
         console.log("model:", model);
         if (onSubmit) {
-          onSubmit(event, { model, provider: provider || "openai" });
+          onSubmit(event, { model, provider });
         } else {
           const formData = new FormData(event.currentTarget);
           const message = formData.get("message");
           console.log("Submitted message:", message);
         }
       },
-      [onSubmit, model, provider]
+      [onSubmit, model, provider],
     );
 
     const handleModelChange = useCallback((newModel: string) => {
       setModel(newModel);
-      const provider = getProviderFromModel(newModel);
+      saveSelectedModel(newModel);
+      const provider = getProviderByModelId(newModel);
       console.log("Model changed:", { model: newModel, provider });
     }, []);
 
     return (
       <AIInput
         onSubmit={handleSubmit}
-        className="border !bg-background/90 backdrop-blur-lg p-2 overflow-visible"
+        className="!bg-background/90 overflow-visible border p-2 backdrop-blur-lg"
       >
         <AIInputTextarea
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className="!text-base !text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+          className="!text-foreground !text-base disabled:cursor-not-allowed disabled:opacity-50"
         />
         <InputToolbar
           model={model}
@@ -165,7 +179,7 @@ const MainInput = memo(
         />
       </AIInput>
     );
-  }
+  },
 );
 
 MainInput.displayName = "MainInput";

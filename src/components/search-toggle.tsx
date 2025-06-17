@@ -21,13 +21,13 @@ export const SearchToggle = memo(
         type="button"
         onClick={handleToggle}
         className={cn(
-          "rounded-full transition-all flex items-center gap-1 px-2 py-1 border h-8",
+          "flex h-8 items-center gap-1 rounded-full border px-2 py-1 transition-all",
           showSearch
             ? "bg-foreground/15 border-foreground text-foreground"
-            : "bg-transparent border-transparent text-muted-foreground hover:text-foreground"
+            : "text-muted-foreground hover:text-foreground border-transparent bg-transparent",
         )}
       >
-        <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+        <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
           <motion.div
             animate={{
               rotate: showSearch ? 360 : 0,
@@ -46,8 +46,8 @@ export const SearchToggle = memo(
           >
             <Globe
               className={cn(
-                "w-4 h-4",
-                showSearch ? "text-[#1EAEDB]" : "text-inherit"
+                "h-4 w-4",
+                showSearch ? "text-[#1EAEDB]" : "text-inherit",
               )}
             />
           </motion.div>
@@ -59,7 +59,7 @@ export const SearchToggle = memo(
               animate={{ width: "auto", opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-xs overflow-hidden whitespace-nowrap text-[#1EAEDB] flex-shrink-0"
+              className="flex-shrink-0 overflow-hidden text-xs whitespace-nowrap text-[#1EAEDB]"
             >
               Search
             </motion.span>
@@ -67,7 +67,7 @@ export const SearchToggle = memo(
         </AnimatePresence>
       </button>
     );
-  }
+  },
 );
 
 SearchToggle.displayName = "SearchToggle";
