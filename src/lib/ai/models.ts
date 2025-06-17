@@ -1,7 +1,6 @@
-import { Brain, MessageSquare, Sparkles, Zap } from "lucide-react";
 import OpenAI from "@/components/ui/openai";
 import Gemini from "@/components/ui/gemini";
-import Claude from "@/components/ui/claude";
+// import Claude from "@/components/ui/claude";
 import Openrouter from "@/components/ui/openrouter";
 
 export const modelData = {

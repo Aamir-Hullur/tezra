@@ -18,7 +18,7 @@ import {
 import { ModelSelector } from "@/components/model-selector";
 import { SearchToggle } from "@/components/search-toggle";
 import { getProviderByModelId } from "@/lib/ai/models";
-import { saveSelectedModel, getSelectedModel } from "@/lib/model-storage";
+import { saveSelectedModel } from "@/lib/model-storage";
 
 interface InputToolbarProps {
   model: string;

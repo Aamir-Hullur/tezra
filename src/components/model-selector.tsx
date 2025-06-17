@@ -14,7 +14,6 @@ import {
   Sparkles,
   Brain,
   MessageSquare,
-  Zap,
   Globe,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -22,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { modelData } from "@/lib/ai/models";
 
 // Update the provider type to be more flexible
-type ProviderIcon = React.ComponentType<any>;
+type ProviderIcon = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
 // Update the ProviderItemProps interface
 interface ProviderItemProps {

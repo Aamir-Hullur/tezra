@@ -1,11 +1,11 @@
-import { deepseek, google, openai, openrouter } from "./services";
-import { generateObject, generateText, LanguageModel } from "ai";
-import { modelData, ALLOWED_MODELS } from "@/lib/ai/models";
+import { google, openai, openrouter } from "./services";
+import { LanguageModel } from "ai";
+import { ALLOWED_MODELS } from "@/lib/ai/models";
 
 // Define allowed models per provider
 
-type Provider = (typeof ALLOWED_MODELS)[number]["provider"];
-type AllowedModel = (typeof ALLOWED_MODELS)[number]["models"][number];
+// type Provider = (typeof ALLOWED_MODELS)[number]["provider"];
+// type AllowedModel = (typeof ALLOWED_MODELS)[number]["models"][number];
 
 export const getModelInstance = (
   provider: string,
