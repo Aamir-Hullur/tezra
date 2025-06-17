@@ -1,6 +1,6 @@
 import ChatInput from "@/components/chat-input";
 import { generateUUID } from "@/lib/utils";
-import { getSelectedModel, getSelectedModelServer } from "@/lib/model-storage";
+import { getSelectedModelServer } from "@/lib/model-storage";
 import { getProviderByModelId } from "@/lib/ai/models";
 
 export default async function Home() {

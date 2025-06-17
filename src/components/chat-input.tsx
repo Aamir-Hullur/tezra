@@ -88,10 +88,10 @@ export default function ChatInput({
   const {
     messages,
     input,
-    setInput,
+    // setInput,
     handleSubmit,
     status,
-    stop,
+    // stop,
     append,
     handleInputChange,
     error,

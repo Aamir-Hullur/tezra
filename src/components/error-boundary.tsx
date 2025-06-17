@@ -48,7 +48,7 @@ export class ErrorBoundary extends React.Component<
 }
 
 function DefaultErrorFallback({
-  error,
+  // error,
   reset,
 }: {
   error?: Error;

@@ -22,11 +22,13 @@ import {
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import React, { memo, useCallback } from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { createHotkey, useGlobalHotkeys } from "@/hooks/use-global-hotkeys";
 
 export const AppSidebar = memo(() => {
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
+  const newChatBtnRef = useRef<HTMLButtonElement>(null);
 
   const handleLinkClick = useCallback(() => {
     setOpenMobile(false);
@@ -37,6 +39,19 @@ export const AppSidebar = memo(() => {
     router.push("/");
     router.refresh();
   }, [setOpenMobile, router]);
+
+  useGlobalHotkeys([
+    createHotkey("o", handleNewChat, {
+      meta: true,
+      shift: true,
+      description: "New Chat",
+    }),
+    // Add more hotkeys here as needed
+    // createHotkey('k', handleSearch, {
+    //   meta: true,
+    //   description: 'Search'
+    // }),
+  ]);
 
   return (
     <Sidebar>
@@ -50,65 +65,38 @@ export const AppSidebar = memo(() => {
             <span className="cursor-pointer rounded-md px-2 text-lg font-semibold">
               Tezra
             </span>
-
-            {(() => {
-              // Ref for the button
-              const newChatBtnRef = useRef<HTMLButtonElement>(null);
-
-              // Register global hotkey
-              useEffect(() => {
-                const onKeyDown = (e: KeyboardEvent) => {
-                  // Cmd+Shift+O (Mac) or Ctrl+Shift+O (Win)
-                  const isCmd = navigator.platform.includes("Mac")
-                    ? e.metaKey
-                    : e.ctrlKey;
-                  if (isCmd && e.shiftKey && (e.key === "o" || e.key === "O")) {
-                    e.preventDefault();
-                    // Prefer calling the handler directly for SPA navigation
-                    handleNewChat();
-                  }
-                };
-                window.addEventListener("keydown", onKeyDown);
-                return () => window.removeEventListener("keydown", onKeyDown);
-              }, []);
-
-              return (
-                <Link
-                  href="/"
-                  onClick={handleLinkClick}
-                  className="flex w-full flex-row items-center gap-3"
+            <Link
+              href="/"
+              onClick={handleLinkClick}
+              className="flex w-full flex-row items-center gap-3"
+            >
+              <Tooltip delayDuration={500}>
+                <TooltipTrigger asChild>
+                  <Button
+                    ref={newChatBtnRef}
+                    variant="default"
+                    type="button"
+                    className="h-fit w-full cursor-pointer p-2"
+                    onClick={handleNewChat}
+                  >
+                    <PlusIcon size={16} />
+                    New Chat
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  align="center"
+                  className="bg-accent/50 text-accent-foreground m-0 rounded-[10px] px-2 py-1 text-xs"
+                  sideOffset={5}
                 >
-                  <Tooltip delayDuration={500}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        ref={newChatBtnRef}
-                        variant="default"
-                        type="button"
-                        className="h-fit w-full cursor-pointer p-2"
-                        onClick={handleNewChat}
-                      >
-                        <PlusIcon size={16} />
-                        New Chat
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="right"
-                      align="center"
-                      className="bg-accent/50 text-accent-foreground m-0 rounded-[10px] px-2 py-1 text-xs"
-                      sideOffset={5}
-                    >
-                      <span className="flex items-center gap-1">
-                        <Command className="text-primary h-4 w-4" />
-                        <ArrowBigUp className="text-primary h-5 w-5" />
-                        <span className="text-primary text-lg font-medium">
-                          O
-                        </span>
-                      </span>
-                    </TooltipContent>
-                  </Tooltip>
-                </Link>
-              );
-            })()}
+                  <span className="flex items-center gap-1">
+                    <Command className="text-primary h-4 w-4" />
+                    <ArrowBigUp className="text-primary h-5 w-5" />
+                    <span className="text-primary text-lg font-medium">O</span>
+                  </span>
+                </TooltipContent>
+              </Tooltip>
+            </Link>
           </div>
         </SidebarMenu>
       </SidebarHeader>

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback } from "react";
+import { memo } from "react";
 import { X } from "lucide-react";
 
 interface FilePreviewProps {
@@ -10,22 +10,36 @@ interface FilePreviewProps {
   onImageClick: (imageUrl: string) => void;
 }
 
+// Extracted callback to avoid inline arrow functions in JSX
+const getHandleImageClick =
+  (
+    fileName: string,
+    filePreviews: { [key: string]: string },
+    onImageClick: (imageUrl: string) => void,
+  ) =>
+  () => {
+    onImageClick(filePreviews[fileName]);
+  };
+
+const getHandleRemoveClick =
+  (index: number, onRemoveFile: (index: number) => void) =>
+  (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onRemoveFile(index);
+  };
+
 export const FilePreview = memo(
   ({ files, filePreviews, onRemoveFile, onImageClick }: FilePreviewProps) => {
     return (
       <div className="flex flex-wrap gap-2 p-0 pb-1 transition-all duration-300">
         {files.map((file, index) => {
-          const handleImageClick = useCallback(() => {
-            onImageClick(filePreviews[file.name]);
-          }, [file.name]);
-
-          const handleRemoveClick = useCallback(
-            (e: React.MouseEvent) => {
-              e.stopPropagation();
-              onRemoveFile(index);
-            },
-            [index],
+          // Extracted callbacks per file to avoid inline arrow functions in JSX
+          const handleImageClick = getHandleImageClick(
+            file.name,
+            filePreviews,
+            onImageClick,
           );
+          const handleRemoveClick = getHandleRemoveClick(index, onRemoveFile);
 
           return (
             <div key={index} className="group relative">
