@@ -28,12 +28,10 @@ export const AppSidebar = memo(() => {
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
 
-  // Extract the Link onClick callback
   const handleLinkClick = useCallback(() => {
     setOpenMobile(false);
   }, [setOpenMobile]);
 
-  // Wrap handleNewChat with useCallback
   const handleNewChat = useCallback(() => {
     setOpenMobile(false);
     router.push("/");
@@ -49,7 +47,7 @@ export const AppSidebar = memo(() => {
       >
         <SidebarMenu>
           <div className="flex flex-col items-center justify-center gap-4">
-            <span className="text-lg font-semibold px-2 rounded-md cursor-pointer">
+            <span className="cursor-pointer rounded-md px-2 text-lg font-semibold">
               Tezra
             </span>
 
@@ -78,7 +76,7 @@ export const AppSidebar = memo(() => {
                 <Link
                   href="/"
                   onClick={handleLinkClick}
-                  className="flex flex-row gap-3 w-full items-center"
+                  className="flex w-full flex-row items-center gap-3"
                 >
                   <Tooltip delayDuration={500}>
                     <TooltipTrigger asChild>
@@ -86,7 +84,7 @@ export const AppSidebar = memo(() => {
                         ref={newChatBtnRef}
                         variant="default"
                         type="button"
-                        className="p-2 h-fit w-full cursor-pointer"
+                        className="h-fit w-full cursor-pointer p-2"
                         onClick={handleNewChat}
                       >
                         <PlusIcon size={16} />
@@ -96,13 +94,13 @@ export const AppSidebar = memo(() => {
                     <TooltipContent
                       side="right"
                       align="center"
-                      className="bg-accent/50 text-accent-foreground px-2 py-1 m-0 rounded-[10px] text-xs"
+                      className="bg-accent/50 text-accent-foreground m-0 rounded-[10px] px-2 py-1 text-xs"
                       sideOffset={5}
                     >
                       <span className="flex items-center gap-1">
-                        <Command className="w-4 h-4 text-primary" />
-                        <ArrowBigUp className="w-5 h-5 text-primary" />
-                        <span className="text-lg text-primary font-medium">
+                        <Command className="text-primary h-4 w-4" />
+                        <ArrowBigUp className="text-primary h-5 w-5" />
+                        <span className="text-primary text-lg font-medium">
                           O
                         </span>
                       </span>
@@ -120,12 +118,12 @@ export const AppSidebar = memo(() => {
       </SidebarContent>
       <SidebarFooter>
         <SidebarGroup>
-          <SidebarMenuButton className="w-full justify-between gap-3 h-12">
+          <SidebarMenuButton className="h-12 w-full justify-between gap-3">
             <div className="flex items-center gap-2">
               <User className="h-5 w-5 rounded-md" />
               <div className="flex flex-col items-start">
                 <span className="text-sm font-medium">John Doe</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-muted-foreground text-xs">
                   john@example.com
                 </span>
               </div>

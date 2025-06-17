@@ -48,21 +48,21 @@ export const VoiceRecorder = memo(
     return (
       <div
         className={cn(
-          "flex flex-col items-center justify-center w-full transition-all duration-300 py-3",
-          isRecording ? "opacity-100" : "opacity-0 h-0"
+          "flex w-full flex-col items-center justify-center py-3 transition-all duration-300",
+          isRecording ? "opacity-100" : "h-0 opacity-0",
         )}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-          <span className="font-mono text-sm text-foreground">
+        <div className="mb-3 flex items-center gap-2">
+          <div className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+          <span className="text-foreground font-mono text-sm">
             {formatTime(time)}
           </span>
         </div>
-        <div className="w-full h-10 flex items-center justify-center gap-0.5 px-4">
+        <div className="flex h-10 w-full items-center justify-center gap-0.5 px-4">
           {[...Array(visualizerBars)].map((_, i) => (
             <div
               key={i}
-              className="w-0.5 rounded-full bg-foreground/50 animate-pulse"
+              className="bg-foreground/50 w-0.5 animate-pulse rounded-full"
               style={{
                 height: `${Math.max(15, Math.random() * 100)}%`,
                 animationDelay: `${i * 0.05}s`,
@@ -73,7 +73,7 @@ export const VoiceRecorder = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 VoiceRecorder.displayName = "VoiceRecorder";

@@ -24,14 +24,14 @@ export const FilePreview = memo(
               e.stopPropagation();
               onRemoveFile(index);
             },
-            [index]
+            [index],
           );
 
           return (
-            <div key={index} className="relative group">
+            <div key={index} className="group relative">
               {file.type.startsWith("image/") && filePreviews[file.name] && (
                 <div
-                  className="w-16 h-16 rounded-xl overflow-hidden cursor-pointer transition-all duration-300"
+                  className="h-16 w-16 cursor-pointer overflow-hidden rounded-xl transition-all duration-300"
                   onClick={handleImageClick}
                 >
                   <img
@@ -41,9 +41,9 @@ export const FilePreview = memo(
                   />
                   <button
                     onClick={handleRemoveClick}
-                    className="absolute top-1 right-1 rounded-full bg-background/70 p-0.5 opacity-100 transition-opacity"
+                    className="bg-background/70 absolute top-1 right-1 rounded-full p-0.5 opacity-100 transition-opacity"
                   >
-                    <X className="h-3 w-3 text-foreground" />
+                    <X className="text-foreground h-3 w-3" />
                   </button>
                 </div>
               )}
@@ -52,7 +52,7 @@ export const FilePreview = memo(
         })}
       </div>
     );
-  }
+  },
 );
 
 FilePreview.displayName = "FilePreview";

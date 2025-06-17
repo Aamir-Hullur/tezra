@@ -18,7 +18,7 @@ function ThemeToggle({}) {
   }
 
   const handleThemeChange = async (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     if (!document.startViewTransition) {
       setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -40,10 +40,10 @@ function ThemeToggle({}) {
   };
 
   return (
-    <div className="absolute right-2 top-2 z-50">
+    <div className="absolute top-2 right-2 z-50">
       <Toggle
         variant="ghost"
-        className="group size-9 data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted"
+        className="group data-[state=on]:hover:bg-muted size-9 data-[state=on]:bg-transparent"
         pressed={resolvedTheme === "light"}
         onPressedChange={() => {}}
         onClick={handleThemeChange}
