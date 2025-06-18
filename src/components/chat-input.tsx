@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { saveSelectedModel } from "@/lib/model-storage";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { generateUUID } from "@/lib/utils";
 
 interface MessageListProps {
   messages: Message[];
@@ -81,11 +80,11 @@ export default function ChatInput({
 }: ChatInputProps) {
   const [currentModelData, setCurrentModelData] =
     useState<modelData>(initialModelData);
+  const [isActiveConversation, setIsActiveConversation] = useState(false);
 
   const currentModelDataRef = useRef(currentModelData);
 
   const convexData = useQuery(api.chats.getByUuid, { uuid: chatId });
-  const saveMessage = useMutation(api.messages.upsert);
   const createChat = useMutation(api.chats.create);
 
   useEffect(() => {
@@ -128,22 +127,31 @@ export default function ChatInput({
     },
   });
 
-  // Sync messages from Convex to local state if they change
+  // Track when conversation is active (submitting or streaming)
   useEffect(() => {
-    if (convexData?.messages) {
-      const aiSdkMessages = convexData.messages.map((msg) => ({
-        id: msg.uuid,
-        role: msg.role,
-        content: msg.content,
-        createdAt: new Date(msg.createdAt),
-      }));
+    const isActive = status === "submitted" || status === "streaming";
+    setIsActiveConversation(isActive);
+  }, [status]);
 
-      // Only update if there are changes (prevent infinite loops)
-      if (JSON.stringify(aiSdkMessages) !== JSON.stringify(messages)) {
-        setMessages(aiSdkMessages);
-      }
+  // Sync messages from Convex to local state (with race condition protection)
+  useEffect(() => {
+    if (!convexData?.messages) return;
+
+    const convexMessages = convexData.messages.map((msg) => ({
+      id: msg.uuid,
+      role: msg.role,
+      content: msg.content,
+      createdAt: new Date(msg.createdAt),
+    }));
+
+    // During active conversation, don't sync to avoid conflicts
+    if (isActiveConversation) {
+      return;
     }
-  }, [convexData?.messages, messages, setMessages]);
+
+    // Simple sync - always update unless actively processing
+    setMessages(convexMessages);
+  }, [convexData?.messages, setMessages, isActiveConversation]);
 
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
@@ -163,12 +171,7 @@ export default function ChatInput({
 
   // Handles user submitting a message:
   // - Ensures chat exists in Convex
-  // - Appends message locally
-  // - Saves message to Convex
-  // - Triggers AI response via /api/chat/route.ts
-  //
-  // ⚠️ This is a source of the race condition: both append/save and handleSubmit (which triggers useChat's fetch)
-  // can cause the same message to be processed twice if not carefully coordinated.
+  // - Triggers AI response via /api/chat/route.ts (which will save both user and assistant messages)
   const handleSubmitWithRedirect = useCallback(
     async (
       e: React.FormEvent<HTMLFormElement>,
@@ -183,14 +186,7 @@ export default function ChatInput({
       currentModelDataRef.current = modelData;
       saveSelectedModel(modelData.model);
 
-      const messageUuid = generateUUID();
-      const userMessage = {
-        uuid: messageUuid,
-        role: "user" as const,
-        content: input,
-        modelId: modelData.model,
-        modelProvider: modelData.provider,
-      };
+      // Ensure chat exists before submitting
       if (!convexData?.chat) {
         try {
           await createChat({
@@ -199,36 +195,15 @@ export default function ChatInput({
           });
         } catch (error) {
           console.error("Failed to create chat:", error);
+          toast.error("Failed to create chat");
+          return;
         }
       }
-      append({
-        id: messageUuid,
-        role: "user",
-        content: input,
-      });
 
-      try {
-        await saveMessage({
-          chatUuid: chatId,
-          ...userMessage,
-        });
-      } catch (error) {
-        console.error("Failed to save message:", error);
-        toast.error("Failed to save message");
-      }
-
-      // This triggers the useChat fetch, which POSTs to /api/chat/route.ts
+      // Let AI SDK handle the message flow and save to Convex via API route
       handleSubmit(e);
     },
-    [
-      input,
-      append,
-      handleSubmit,
-      saveMessage,
-      createChat,
-      chatId,
-      convexData?.chat,
-    ],
+    [input, handleSubmit, createChat, chatId, convexData?.chat],
   );
   console.log("messages", messages);
   console.log("error", error);

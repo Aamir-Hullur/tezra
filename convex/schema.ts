@@ -7,7 +7,7 @@ export default defineSchema({
     name: v.string(),
     email: v.string(),
     imageUrl: v.optional(v.string()),
-    tokenIdentifier: v.string(),
+    tokenIdentifier: v.string(), // Clerk token identifier for auth
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -18,7 +18,7 @@ export default defineSchema({
   chats: defineTable({
     uuid: v.string(), // Client-generated UUID for URLs (performance)
     title: v.string(),
-    userId: v.optional(v.id("users")),
+    userId: v.optional(v.id("users")), // Optional for anonymous sessions
     visibility: v.union(v.literal("private"), v.literal("public")),
     parentChatId: v.optional(v.id("chats")), // For fork functionality
     isAnonymous: v.boolean(),
