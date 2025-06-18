@@ -5,6 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { ClerkProvider } from "@clerk/nextjs";
+import ConvexClientProvider from "@/components/convex-clerk-provider";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -46,10 +49,14 @@ export default function RootLayout({
           enableSystem={true}
           // disableTransitionOnChange
         >
-          <ErrorBoundary>
-            <Toaster />
-            {children}
-          </ErrorBoundary>
+          <ClerkProvider>
+            <ConvexClientProvider>
+              <ErrorBoundary>
+                <Toaster />
+                {children}
+              </ErrorBoundary>
+            </ConvexClientProvider>
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>

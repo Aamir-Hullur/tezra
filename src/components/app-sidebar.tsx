@@ -16,6 +16,8 @@ import {
   ArrowBigUp,
   ChevronsUpDown,
   Command,
+  LogIn,
+  LogOut,
   PlusIcon,
   User,
 } from "lucide-react";
@@ -24,11 +26,27 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import React, { memo, useCallback } from "react";
 import { useRef } from "react";
 import { createHotkey, useGlobalHotkeys } from "@/hooks/use-global-hotkeys";
+import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
+import { useConvexAuth } from "convex/react";
+import { Authenticated, Unauthenticated, AuthLoading } from "convex/react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useStoreUserEffect } from "@/hooks/use-store-user-effect";
 
 export const AppSidebar = memo(() => {
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
   const newChatBtnRef = useRef<HTMLButtonElement>(null);
+  const { isAuthenticated, userId } = useStoreUserEffect();
+  const { user } = useUser();
+  console.log(userId);
+  console.log(isAuthenticated);
+  console.log(user?.emailAddresses[0].emailAddress);
+  console.log(user);
 
   const handleLinkClick = useCallback(() => {
     setOpenMobile(false);
@@ -105,20 +123,86 @@ export const AppSidebar = memo(() => {
         <SidebarGroup />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarGroup>
-          <SidebarMenuButton className="h-12 w-full justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <User className="h-5 w-5 rounded-md" />
-              <div className="flex flex-col items-start">
-                <span className="text-sm font-medium">John Doe</span>
-                <span className="text-muted-foreground text-xs">
-                  john@example.com
-                </span>
+        <AuthLoading>
+          <SidebarGroup>
+            {/* <SidebarMenuButton className="h-12 w-full justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 rounded-md" />
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">John Doe</span>
+                  <span className="text-muted-foreground text-xs">
+                    john@example.com
+                  </span>
+                </div>
+              </div>
+              <ChevronsUpDown className="h-5 w-5 rounded-md" />
+            </SidebarMenuButton> */}
+            <div className="bg-muted flex h-12 w-full animate-pulse items-center gap-2 rounded-lg p-2">
+              <div className="bg-muted-foreground/20 h-8 w-8 rounded-full"></div>
+              <div className="flex flex-1 flex-col gap-1">
+                <div className="bg-muted-foreground/20 h-3 rounded"></div>
+                <div className="bg-muted-foreground/10 h-2 w-3/4 rounded"></div>
               </div>
             </div>
-            <ChevronsUpDown className="h-5 w-5 rounded-md" />
-          </SidebarMenuButton>
-        </SidebarGroup>
+          </SidebarGroup>
+        </AuthLoading>
+        <Unauthenticated>
+          <SidebarGroup>
+            <SignInButton mode="modal">
+              <Button
+                variant="ghost"
+                className="h-12 w-full cursor-pointer justify-start gap-2 rounded-lg"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Button>
+            </SignInButton>
+          </SidebarGroup>
+        </Unauthenticated>
+        <Authenticated>
+          <SidebarGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton className="h-12 w-full justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    {user?.imageUrl ? (
+                      <img
+                        src={user.imageUrl}
+                        alt={
+                          user.fullName ||
+                          user.emailAddresses[0]?.emailAddress ||
+                          "User"
+                        }
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="bg-muted h-8 w-8 rounded-full p-1" />
+                    )}
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-medium">
+                        {user?.fullName || user?.firstName || "User"}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        {user?.emailAddresses[0]?.emailAddress}
+                      </span>
+                    </div>
+                    <ChevronsUpDown className="h-4 w-4" />
+                  </div>
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <SignOutButton>
+                    <button className="flex w-full items-center gap-2">
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </button>
+                  </SignOutButton>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarGroup>
+        </Authenticated>
       </SidebarFooter>
     </Sidebar>
   );

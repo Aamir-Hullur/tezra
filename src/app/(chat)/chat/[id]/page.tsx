@@ -9,7 +9,6 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
 
-  // Read the user's preferred model from cookies on the server
   const selectedModel = await getSelectedModelServer();
   const selectedProvider = getProviderByModelId(selectedModel);
 
@@ -17,9 +16,6 @@ export default async function Page({ params }: PageProps) {
     model: selectedModel,
     provider: selectedProvider,
   };
-
-  // TODO: Add database logic to fetch existing messages
-  // const messages = await getMessagesByChatId({ id });
 
   return (
     <div className="flex h-screen justify-center">
